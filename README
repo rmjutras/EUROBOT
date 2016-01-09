@@ -1,0 +1,7 @@
+LyricScraper is a stand-alone python file which scrapes the eurobeat-prime.com
+lyrics database and stores the lyrics to lyrics.txt. Also the SongData objects 
+for each song gets pickled with the default python pickling library and stored
+to pickled.bin. This is the only way to recover the artist and title
+information.
+
+Other files are documented in their docstrings.
