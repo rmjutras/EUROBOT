@@ -5,6 +5,12 @@ The aim of this project is to automate the production of songs within the
 Eurobeat genre. This will save Eurobeat artists roughly 2000 hours of work per
 year, without any noticeable drop in song quality.
 
+Dependencies
+-------------
+This project depends on [Beautiful Soup 4][1] and the [Natural Language Toolkit][2]
+To install all dependencies, simply type into a terminal:
+`pip install bs4 nltk`
+
 Individual components within the project:
 -----------------------------------------
 
@@ -17,3 +23,6 @@ information.
 
 ### Other Files
 Other files are documented in their docstrings.
+
+[1]: http://www.crummy.com/software/BeautifulSoup/
+[2]: http://www.nltk.org/
