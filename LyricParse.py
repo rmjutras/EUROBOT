@@ -1,7 +1,6 @@
 #! /usr/bin/env python3
 ''' Provides functions to parse a set of lyrics'''
 
-import pickle
 from collections import Counter
 import multiprocessing
 
@@ -72,14 +71,11 @@ def tag_song(song, simplify=True):
     song.tagged = tagged_song
     return song
             
-def do_parse(songs = None):
+def do_parse(songs):
     ''' Parses lyrics in songs.pkl and provides analysis data.
     Can be optionally be provided an array with all SongData objects.'''
     
-    if songs == None:
-        pickle_file = open('songs.pkl','rb')
-        songs = pickle.load(pickle_file)
-        pickle_file.close()
+    
     
     after_pos = {} # Frequency of a PoS after another given PoS
     common_words = {} # Frequency of different words for a part of speech
@@ -113,6 +109,8 @@ def do_parse(songs = None):
                     line_starts[line[0][1]] += 1
                     for (w1, w2) in nltk.bigrams(line):
                         after_pos[w1[1]][w2[1]] += 1
+                    for word in line:
+                        common_words[word[1]][word[0]] += 1
                     
     print("\rParsing lyrics...Done!   ")
     return {'after_pos': after_pos, 'common_words': common_words,
@@ -120,7 +118,12 @@ def do_parse(songs = None):
             'paragraph_lines': paragraph_lines, 'line_words': line_words}
     
 if __name__ == "__main__":
-    grammar = do_parse()
+    import pickle
+    pickle_file = open('songs.pkl','rb')
+    songs = pickle.load(pickle_file)
+    pickle_file.close()
+    
+    grammar = do_parse(songs)
     
     pickle_file = open('grammar.pkl','wb')
     pickle.dump(grammar, pickle_file)
