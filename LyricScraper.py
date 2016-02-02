@@ -8,8 +8,10 @@ import multiprocessing
 
 if sys.version_info > (3, 0): # Using Python 3
     import urllib.request as request
+    from urllib.error import URLError
 else: # Using Python 2
     import urllib2 as request
+    from urllib2 import URLError
 
 
 
@@ -35,7 +37,7 @@ def get_song_urls():
 def parallel_scrape_songs(urllist):
     ''' Scrapes the lyrics of a each song in a list of urls.
         Uses parallel threads.'''
-    pool = multiprocessing.Pool(8)
+    pool = multiprocessing.Pool(16)
     scrape_data = []
     count = len(urllist)
     for i, data in enumerate(pool.imap_unordered(scrape_song, urllist), 1):
@@ -48,7 +50,7 @@ def parallel_scrape_songs(urllist):
             out_string = short_artist + " - " + short_title
             print("\r{:8.2f}% {:69s}".format(i/count*100, out_string), end='')
         scrape_data.append(data)
-    print("\r{:8.2f}% Done!".format(100))
+    print("\r{:8.2f}% Done!{:64s}".format(100,''))
     return scrape_data
 
 def scrape_songs(urllist):
@@ -63,14 +65,17 @@ def scrape_songs(urllist):
 def scrape_song(url):
     ''' Scrapes the lyrics of a single song.'''
     retries = 5
-    try:
-        song_page = request.urlopen(url)
-    except URLError:
-        if retries > 0:
-            retries = 0
-            time.sleep(1)
-        else:
-            raise
+    song_page = None
+    while not song_page:
+        try:
+            song_page = request.urlopen(url)
+        except URLError:
+            if retries > 0:
+                retries -= 1
+                time.sleep(1)
+            else:
+                raise
+            
     song_soup = BeautifulSoup(b''.join(song_page.readlines()), 'html.parser')
     
     lyrics_box = song_soup.find('div', class_='mmids')

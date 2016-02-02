@@ -109,6 +109,8 @@ def do_parse(songs):
                     line_starts[line[0][1]] += 1
                     for (w1, w2) in nltk.bigrams(line):
                         after_pos[w1[1]][w2[1]] += 1
+                    for word in line:
+                        common_words[word[1]][word[0].lower()] += 1
                     
     print("\rParsing lyrics...Done!   ")
     return {'after_pos': after_pos, 'common_words': common_words,

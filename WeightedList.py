@@ -10,7 +10,7 @@ class WeightedList:
         accumulator = 0
         for key in sorted(items):
             val = items[key]
-            self.indexes.append(next_index)
+            self.indexes.append(accumulator)
             self.items.append(key)
             accumulator += val
 
