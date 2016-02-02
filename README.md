@@ -13,13 +13,24 @@ To install all dependencies, simply type into a terminal:
 
 Individual components within the project:
 -----------------------------------------
+### main.py
+Runs all of the modules below in sequential order. This will generate a new song
+if everything goes well.
 
 ### LyricScraper
-LyricScraper is a stand-alone python file which scrapes the eurobeat-prime.com
-lyrics database and stores the lyrics to lyrics.txt. Also the SongData objects 
-for each song gets pickled with the default python pickling library and stored
-to pickled.bin. This is the only way to recover the artist and title
-information.
+LyricScraper scrapes the eurobeat-prime.com lyrics database and stores
+information in SongData objects. A list of all SongData objects is returned for
+further processing. If the module is called in a stand-along fashion, then the
+array gets pickled with the default python pickling library and stored to
+songs.pkl.
+
+### LyricParse
+LyricParse deals with measuring the frequency of grammar components of the input
+songs. It measures the number of paragraphs, lines per paragraph and words per
+line in each song. Also, it determines the frequency of a given part of speech 
+following another, the frequency of a part of speech starting a line, and the
+frequency of a word being a specific part of speech. If this module is run alone
+then these results are stored in grammar.pkl. 
 
 ### Other Files
 Other files are documented in their docstrings.
