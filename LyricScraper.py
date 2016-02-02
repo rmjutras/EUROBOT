@@ -48,6 +48,7 @@ def parallel_scrape_songs(urllist):
             out_string = short_artist + " - " + short_title
             print("\r{:8.2f}% {:69s}".format(max_i/count*100, out_string), end='')
         scrape_data.append(data)
+    print("\r{:8.2f}% Done!".format(100))
     return scrape_data
 
 def scrape_songs(urllist):
@@ -72,18 +73,19 @@ def scrape_song(url):
 
     return SongData(artist, title, lyrics)
 
-if __name__ == "__main__":
+def do_scrape():
     print("Loading list of songs to scrape...")
     urls = get_song_urls()
     print("    {:d} songs found.".format(len(urls)))
     print("Scraping songs...")
     results = parallel_scrape_songs(urls)
-    lyric_dump = open('lyrics.txt',encoding='utf-8', mode='w')
-    lyric_dump.writelines("\n".join([data.lyrics for data in results]))
-    lyric_dump.close()
+    return results
+    
+if __name__ == "__main__":
+    songs = do_scrape()
     
     import pickle
-    pickle_file = open('pickled.bin','wb')
-    pickle.dump(results, pickle_file)
+    pickle_file = open('songs.pkl','wb')
+    pickle.dump(songs, pickle_file)
     pickle_file.close()
     
