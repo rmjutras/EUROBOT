@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 #! /usr/bin/env python3
 ''' Provides functions to parse a set of lyrics'''
 
@@ -73,7 +72,7 @@ def tag_song(song, simplify=True):
     song.tagged = tagged_song
     return song
             
-def do_parsing(songs = None):
+def do_parse(songs = None):
     ''' Parses lyrics in songs.pkl and provides analysis data.
     Can be optionally be provided an array with all SongData objects.'''
     
@@ -121,7 +120,7 @@ def do_parsing(songs = None):
             'paragraph_lines': paragraph_lines, 'line_words': line_words}
     
 if __name__ == "__main__":
-    grammar = do_parsing()
+    grammar = do_parse()
     
     pickle_file = open('grammar.pkl','wb')
     pickle.dump(grammar, pickle_file)
