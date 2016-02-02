@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 ''' Scrapes the lyrics from the eurobeat-prime.com database.'''
 
-from __future__ import print_function
+from __future__ import print_function, division
 import sys
 import multiprocessing
 
@@ -24,7 +24,7 @@ def get_song_urls():
     song_urls = []
     for option in ARTIST_OPTIONS:
         artist_page = request.urlopen(ARTIST_URL + option)
-        soup = BeautifulSoup(''.join(artist_page.readlines()), 'html.parser')
+        soup = BeautifulSoup(b''.join(artist_page.readlines()), 'html.parser')
         
         song_links = soup.find('div', class_='mmids').find_all("a")
         song_urls += [SONG_URL + link.get("href") for link in song_links]
@@ -62,7 +62,7 @@ def scrape_songs(urllist):
 def scrape_song(url):
     ''' Scrapes the lyrics of a single song.'''
     song_page = request.urlopen(url)
-    song_soup = BeautifulSoup(''.join(song_page.readlines()), 'html.parser')
+    song_soup = BeautifulSoup(b''.join(song_page.readlines()), 'html.parser')
     
     lyrics_box = song_soup.find('div', class_='mmids')
     artist_title = lyrics_box.b.extract().text
