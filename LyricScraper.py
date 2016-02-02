@@ -32,13 +32,12 @@ def get_song_urls():
     return song_urls
       
 def parallel_scrape_songs(urllist):
-    ''' Scrapes the lyrics of a each song in a list of urls. Uses parallel threads.'''
+    ''' Scrapes the lyrics of a each song in a list of urls.
+        Uses parallel threads.'''
     pool = multiprocessing.Pool(8)
     scrape_data = []
-    max_i = 0
     count = len(urllist)
     for i, data in enumerate(pool.imap_unordered(scrape_song, urllist), 1):
-        max_i = max(i, max_i)
         if i%2 == 0:
             short_artist = data.artist[:19] + ".." if \
                     len(data.artist) > 21 else data.artist
@@ -46,7 +45,7 @@ def parallel_scrape_songs(urllist):
             short_title = data.title[:title_length] + ".." if \
                     len(data.title) > title_length else data.title
             out_string = short_artist + " - " + short_title
-            print("\r{:8.2f}% {:69s}".format(max_i/count*100, out_string), end='')
+            print("\r{:8.2f}% {:69s}".format(i/count*100, out_string), end='')
         scrape_data.append(data)
     print("\r{:8.2f}% Done!".format(100))
     return scrape_data

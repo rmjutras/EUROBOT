@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #! /usr/bin/env python3
 ''' Provides functions to parse a set of lyrics'''
 
