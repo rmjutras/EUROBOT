@@ -18,12 +18,21 @@ def generate_song(grammar):
         for line in range(num_lines):
             line = []
             num_words = select(grammar['line_words'])
-            for word in range(num_words):
-                if word == 0:
+            for word_num in range(num_words):
+                if word_num == 0:
                     part_of_speech = select(grammar['line_starts'])
                 else:   
-                    part_of_speech = select(grammar['after_pos'][line[word-1][1]])
-                word = select(grammar['common_words'][part_of_speech])
+                    part_of_speech = select(
+                            grammar['after_pos'][line[word_num-1][1]])
+                    
+                correct_case = False
+                while not correct_case:
+                    word = select(grammar['common_words'][part_of_speech])
+                    if word[0].isupper() and word_num == 0:
+                        correct_case = True
+                    elif word[0].islower() and word_num > 0:
+                        correct_case = True
+                    
                 line.append((word, part_of_speech))
             paragraph.append(line)
         song.append(paragraph)

@@ -9,7 +9,7 @@ Dependencies
 -------------
 This project depends on [Beautiful Soup 4][1] and the [Natural Language Toolkit][2]
 To install all dependencies, simply type into a terminal:
-`pip install bs4 nltk`
+`pip install beautifulsoup4 nltk`
 
 Individual components within the project:
 -----------------------------------------
