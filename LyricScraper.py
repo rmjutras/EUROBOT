@@ -3,6 +3,7 @@
 
 from __future__ import print_function, division
 import sys
+import time
 import multiprocessing
 
 if sys.version_info > (3, 0): # Using Python 3
@@ -61,7 +62,15 @@ def scrape_songs(urllist):
     
 def scrape_song(url):
     ''' Scrapes the lyrics of a single song.'''
-    song_page = request.urlopen(url)
+    retries = 5
+    try:
+        song_page = request.urlopen(url)
+    except URLError:
+        if retries > 0:
+            retries = 0
+            time.sleep(1)
+        else:
+            raise
     song_soup = BeautifulSoup(b''.join(song_page.readlines()), 'html.parser')
     
     lyrics_box = song_soup.find('div', class_='mmids')
