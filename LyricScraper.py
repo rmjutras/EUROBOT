@@ -5,18 +5,14 @@ from __future__ import print_function, division
 import sys
 import time
 import multiprocessing
-
-if sys.version_info > (3, 0): # Using Python 3
-    import urllib.request as request
-    from urllib.error import URLError
-else: # Using Python 2
-    import urllib2 as request
-    from urllib2 import URLError
-
-
+import requests
+from requests.exceptions import ConnectionError
 
 from bs4 import BeautifulSoup
 from SongData import SongData
+
+# Keeps the connection alive instead of reconnecting constantly
+session = requests.Session()
 
 def get_song_urls():
     ''' Reads the urls for all of the songs in the database.'''
@@ -26,8 +22,8 @@ def get_song_urls():
     
     song_urls = []
     for option in ARTIST_OPTIONS:
-        artist_page = request.urlopen(ARTIST_URL + option)
-        soup = BeautifulSoup(b''.join(artist_page.readlines()), 'html.parser')
+        artist_page = session.get(ARTIST_URL + option)
+        soup = BeautifulSoup(artist_page.text, 'html.parser')
         
         song_links = soup.find('div', class_='mmids').find_all("a")
         song_urls += [SONG_URL + link.get("href") for link in song_links]
@@ -41,7 +37,7 @@ def parallel_scrape_songs(urllist):
     scrape_data = []
     count = len(urllist)
     for i, data in enumerate(pool.imap_unordered(scrape_song, urllist), 1):
-        if i%2 == 0:
+        if i%10 == 0:
             short_artist = data.artist[:19] + ".." if \
                     len(data.artist) > 21 else data.artist
             title_length = 66 - len(short_artist)
@@ -66,17 +62,17 @@ def scrape_song(url):
     ''' Scrapes the lyrics of a single song.'''
     retries = 5
     song_page = None
-    while not song_page:
+    while song_page is None or song_page.status_code != requests.codes.ok:
         try:
-            song_page = request.urlopen(url)
-        except URLError:
+            song_page = session.get(url)
+        except ConnectionError:
             if retries > 0:
                 retries -= 1
                 time.sleep(1)
             else:
                 raise
             
-    song_soup = BeautifulSoup(b''.join(song_page.readlines()), 'html.parser')
+    song_soup = BeautifulSoup(song_page.text, 'html.parser')
     
     lyrics_box = song_soup.find('div', class_='mmids')
     artist_title = lyrics_box.b.extract().text

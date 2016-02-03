@@ -7,9 +7,9 @@ year, without any noticeable drop in song quality.
 
 Dependencies
 -------------
-This project depends on [Beautiful Soup 4][1] and the [Natural Language Toolkit][2]
+This project depends on [Beautiful Soup 4][1], [Requests][3] and the [Natural Language Toolkit][2]
 To install all dependencies, simply type into a terminal:
-`pip install beautifulsoup4 nltk`
+`pip install beautifulsoup4 requests nltk`
 
 Individual components within the project:
 -----------------------------------------
@@ -37,3 +37,4 @@ Other files are documented in their docstrings.
 
 [1]: http://www.crummy.com/software/BeautifulSoup/
 [2]: http://www.nltk.org/
+[3]: http://docs.python-requests.org/
