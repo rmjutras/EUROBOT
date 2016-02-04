@@ -5,6 +5,8 @@ from __future__ import print_function, division
 import sys
 import time
 import multiprocessing
+import socket
+
 import requests
 from requests.exceptions import ConnectionError
 
@@ -13,11 +15,16 @@ from SongData import SongData
 
 # Keeps the connection alive instead of reconnecting constantly
 session = requests.Session()
+# Intentionally avoid DNS lookups to resolve issues with ISP being unable 
+# to handle request flood, resulting in DNS hijacking a valid address
+session.headers.update({'Host':'eurobeat-prime.com'})
+ip_address = socket.getaddrinfo('eurobeat-prime.com', 80, socket.AF_INET,
+        socket.SOCK_STREAM)[0][4][0]
 
 def get_song_urls():
     ''' Reads the urls for all of the songs in the database.'''
-    SONG_URL = 'http://www.eurobeat-prime.com/lyrics.php'
-    ARTIST_URL = 'http://www.eurobeat-prime.com/lyrics.php?artist='
+    SONG_URL = 'http://' + ip_address + '/lyrics.php'
+    ARTIST_URL = 'http://' + ip_address + '/lyrics.php?artist='
     ARTIST_OPTIONS = '1abcdefghijklmnopqrstuvwxyz'
     
     song_urls = []
@@ -32,7 +39,7 @@ def get_song_urls():
       
 def parallel_scrape_songs(urllist):
     ''' Scrapes the lyrics of a each song in a list of urls.
-        Uses parallel threads.'''
+        Uses parallel processes to maximize speed.'''
     pool = multiprocessing.Pool(16)
     scrape_data = []
     count = len(urllist)
@@ -69,11 +76,11 @@ def scrape_song(url):
             if retries > 0:
                 retries -= 1
                 time.sleep(1)
+                continue
             else:
                 raise
             
     song_soup = BeautifulSoup(song_page.text, 'html.parser')
-    
     lyrics_box = song_soup.find('div', class_='mmids')
     artist_title = lyrics_box.b.extract().text
     artist = artist_title.split('-')[0].strip()
