@@ -2,7 +2,7 @@
 ''' Scrapes the lyrics from the eurobeat-prime.com database.'''
 
 from __future__ import print_function, division
-import sys
+#import sys
 import time
 import multiprocessing
 import socket
@@ -12,6 +12,7 @@ from requests.exceptions import ConnectionError
 
 from bs4 import BeautifulSoup
 from SongData import SongData
+#%%
 
 # Keeps the connection alive instead of reconnecting constantly
 session = requests.Session()
@@ -37,7 +38,7 @@ def get_song_urls():
         
     return song_urls
       
-def parallel_scrape_songs(urllist):
+def parallel_scrape_song_list(urllist):
     ''' Scrapes the lyrics of a each song in a list of urls.
         Uses parallel processes to maximize speed.'''
     pool = multiprocessing.Pool(16)
@@ -56,14 +57,14 @@ def parallel_scrape_songs(urllist):
     print("\r{:8.2f}% Done!{:64s}".format(100,''))
     return scrape_data
 
-def scrape_songs(urllist):
-    ''' Scrapes the lyrics of a each song in a list of urls.'''
-    scrape_data = []
-    count = len(urllist)
-    for i, url in enumerate(urllist, 1):
-        result = scrape_song(url)
-        scrape_data.append(result)
-    return scrape_data
+#def scrape_song_lists(urllist):
+#    ''' Scrapes the lyrics of a each song in a list of urls.'''
+#    scrape_data = []
+#    count = len(urllist)
+#    for i, url in enumerate(urllist, 1):
+#        result = scrape_song(url)
+#        scrape_data.append(result)
+#    return scrape_data
     
 def scrape_song(url):
     ''' Scrapes the lyrics of a single song.'''
@@ -94,9 +95,11 @@ def do_scrape():
     urls = get_song_urls()
     print("    {:d} songs found.".format(len(urls)))
     print("Scraping songs...")
-    results = parallel_scrape_songs(urls)
+    results = parallel_scrape_song_list(urls)
     return results
     
+    
+#%%
 if __name__ == "__main__":
     songs = do_scrape()
     
